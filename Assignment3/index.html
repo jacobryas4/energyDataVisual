@@ -18,20 +18,32 @@
 			fill: black;
 			font-size: 11px;
 		}
+		#main {
+			position: absolute;
+			top: 175px;
+		}
 		#co-main {
 			position: absolute;
-			left: 700px;
+			left: 750px;
+			top: 175px;
 			
 		}
-		h1 {
-			/* text-align: center; */
+
+		#header2, #units2 {
+			position: absolute;
+			left: 750px;
+			top: 0px;
 		}
+		
 	</style>
 </head>
 <body>
 
-	<h1>Energy Production</h1>
-	<h4>Quadrillion BTU</h4>
+	<h2 id="header">Primary Energy Production (Quadrillion BTU)</h2>
+	
+
+	<h2 id="header2">Primary Energy Production (Quadrillion BTU)</h2>
+	
 	
 
 	<svg id="main" width="600" height="600">
@@ -42,11 +54,11 @@
 		
 	</svg>
 
-	<select id="selectionWidget" style="position: absolute; left: 250px; top: 75px">
+	<select id="selectionWidget" style="position: absolute; left: 200px; top: 75px">
 	
 		
 	</select>
-	<select id="selectionWidget2" style="position: absolute; left: 550px; top: 75px">
+	<select id="selectionWidget2" style="position: absolute; left: 199px; top: 95px">
 
 		<option value="totalEnergyProduction">Total Production</option>
 		<option value="coalConsumption">Coal Consumption</option>
@@ -55,8 +67,17 @@
 		<option value="totalConsumption">Total Consumption</option>
 
 	</select>
-	<select id="selectionWidget3" style="position: absolute; left: 850px; top: 75px">
+	<select id="selectionWidget3" style="position: absolute; left: 950px; top: 75px">
 		
+			
+	</select>
+	<select id="selectionWidget4" style="position: absolute; left: 949px; top: 95px">
+		
+		<option value="totalEnergyProduction">Total Production</option>
+		<option value="coalConsumption">Coal Consumption</option>
+		<option value="renewableConsumption">Renewable Energy Consumption</option>
+		<option value="c02Emissions">C02 Emissions</option>
+		<option value="totalConsumption">Total Consumption</option>
 			
 	</select>
 	
@@ -75,18 +96,24 @@
 		var dataSet = 'data/energy.csv';
 
 		// get elements
+		var selectionWidget = document.getElementById("selectionWidget");
 		var selectionWidget2 = document.getElementById("selectionWidget2");
 		var dataSelection = selectionWidget2.value;
+		var selectionWidget4 = document.getElementById("selectionWidget4");
+		var header = document.getElementById('header');
+		var header2 = document.getElementById('header2');
 		
 
 		d3.select('#selectionWidget2')
 				.on('change', function() {
 					dataSelection = selectionWidget2.value;
 					comparisonCountry = selectionWidget3.value;
+					firstSelection = selectionWidget.value;
 
 					if (dataSelection === "totalEnergyProduction") {
 							var dataSet = 'data/energy.csv';
-
+							header.innerHTML = "Primary Energy Production (Quadrillion BTU)";
+							
 
 							d3.select("#main").selectAll('g').remove();
 							d3.csv(dataSet, function(data) 
@@ -125,12 +152,245 @@
 											listOfLocalities.push( record.Locality );
 										}
 										dataReady();
+										// drawBarChart2(comparisonCountry);
+										drawBarChart(firstSelection);
+									});
+							
+					} else if (dataSelection === "coalConsumption") {
+							var dataSet = 'data/coal_consumption.csv';
+							header.innerHTML = "Coal Consumption (Million Short Tons)";
+
+							d3.select("#main").selectAll('g').remove();
+							d3.csv(dataSet, function(data) 
+									{	
+										for (var i=0; i<data.length; i++)
+										
+										{
+											var record = data[i];
+											record.energyProduction = [];
+
+											// loop through all years, from 1980 to 2012
+											for (var year=1980; year<=2012; year++) 
+											{
+												var value = record[year];
+
+												// deal with missing data points
+												if (value === '--') {
+													value = 0;
+												}
+												else if (value === 'NA') {
+													value = 0;
+												}
+												else if (value === '(s)') {
+													value = 0;
+												}
+												else if (value === 'W') {
+													value = 0;
+												}
+												
+												// add record of current energy production
+												record.energyProduction.push( +value );
+												
+											}
+											// create a list of country names
+											localities[ record.Locality ] = record;
+											listOfLocalities.push( record.Locality );
+										}
+										dataReady();
+										drawBarChart(firstSelection);
+										// drawBarChart2(comparisonCountry);
+									});
+
+					} else if (dataSelection === "renewableConsumption") {
+							var dataSet = 'data/renewable_electricity_consumption.csv';
+							header.innerHTML = "Renewable Energy Consumption (Billion Kilowatt-hours)";
+
+							d3.select("#main").selectAll('g').remove();
+							d3.csv(dataSet, function(data) 
+									{	
+										for (var i=0; i<data.length; i++)
+										
+										{
+											var record = data[i];
+											record.energyProduction = [];
+
+											// loop through all years, from 1980 to 2012
+											for (var year=1980; year<=2012; year++) 
+											{
+												var value = record[year];
+
+												// deal with missing data points
+												if (value === '--') {
+													value = 0;
+												}
+												else if (value === 'NA') {
+													value = 0;
+												}
+												else if (value === '(s)') {
+													value = 0;
+												}
+												else if (value === 'W') {
+													value = 0;
+												}
+												
+												// add record of current energy production
+												record.energyProduction.push( +value );
+												
+											}
+											// create a list of country names
+											localities[ record.Locality ] = record;
+											listOfLocalities.push( record.Locality );
+										}
+										dataReady();
+										drawBarChart(firstSelection);
+										// drawBarChart2(comparisonCountry);
+									});
+					} else if (dataSelection === "c02Emissions") {
+							var dataSet = 'data/co2_emissions_per_capita.csv';
+							header.innerHTML = "Energy-Related CO2 Emissions (Metric Tons per Capita)";
+
+							d3.select("#main").selectAll('g').remove();
+							d3.csv(dataSet, function(data) 
+									{	
+										for (var i=0; i<data.length; i++)
+										
+										{
+											var record = data[i];
+											record.energyProduction = [];
+
+											// loop through all years, from 1980 to 2012
+											for (var year=1980; year<=2012; year++) 
+											{
+												var value = record[year];
+
+												// deal with missing data points
+												if (value === '--') {
+													value = 0;
+												}
+												else if (value === 'NA') {
+													value = 0;
+												}
+												else if (value === '(s)') {
+													value = 0;
+												}
+												else if (value === 'W') {
+													value = 0;
+												}
+												
+												// add record of current energy production
+												record.energyProduction.push( +value );
+												
+											}
+											// create a list of country names
+											localities[ record.Locality ] = record;
+											listOfLocalities.push( record.Locality );
+										}
+										dataReady();
+										// drawBarChart2(comparisonCountry);
+										drawBarChart(firstSelection);
+									});
+					} else if (dataSelection === "totalConsumption") {
+							var dataSet = 'data/total_electricity_consumption.csv';
+							header.innerHTML = "Total Electricity Consumption (Billion Kilowatt-hours";
+
+							d3.select("#main").selectAll('g').remove();
+							d3.csv(dataSet, function(data) 
+									{	
+										for (var i=0; i<data.length; i++)
+										
+										{
+											var record = data[i];
+											record.energyProduction = [];
+
+											// loop through all years, from 1980 to 2012
+											for (var year=1980; year<=2012; year++) 
+											{
+												var value = record[year];
+
+												// deal with missing data points
+												if (value === '--') {
+													value = 0;
+												}
+												else if (value === 'NA') {
+													value = 0;
+												}
+												else if (value === '(s)') {
+													value = 0;
+												}
+												else if (value === 'W') {
+													value = 0;
+												}
+												
+												// add record of current energy production
+												record.energyProduction.push( +value );
+												
+											}
+											// create a list of country names
+											localities[ record.Locality ] = record;
+											listOfLocalities.push( record.Locality );
+										}
+										dataReady();
+										// drawBarChart2(comparisonCountry);
+										drawBarChart(firstSelection);
+									});
+					};
+					console.log(dataSet);
+				});
+		d3.select('#selectionWidget4')
+				.on('change', function() {
+					dataSelection = selectionWidget4.value;
+					comparisonCountry = selectionWidget3.value;
+					firstSelection = selectionWidget.value;
+
+					if (dataSelection === "totalEnergyProduction") {
+							var dataSet = 'data/energy.csv';
+							header2.innerHTML = "Primary Energy Production (Quadrillion BTU)";
+
+							// d3.select("#main").selectAll('g').remove();
+							d3.csv(dataSet, function(data) 
+									{	
+										for (var i=0; i<data.length; i++)
+										
+										{
+											var record = data[i];
+											record.energyProduction = [];
+
+											// loop through all years, from 1980 to 2012
+											for (var year=1980; year<=2012; year++) 
+											{
+												var value = record[year];
+
+												// deal with missing data points
+												if (value === '--') {
+													value = 0;
+												}
+												else if (value === 'NA') {
+													value = 0;
+												}
+												else if (value === '(s)') {
+													value = 0;
+												}
+												else if (value === 'W') {
+													value = 0;
+												}
+												
+												// add record of current energy production
+												record.energyProduction.push( +value );
+												
+											}
+											// create a list of country names
+											localities[ record.Locality ] = record;
+											listOfLocalities.push( record.Locality );
+										}
+										// dataReady();
 										drawBarChart2(comparisonCountry);
 									});
 							
 					} else if (dataSelection === "coalConsumption") {
 							var dataSet = 'data/coal_consumption.csv';
-							d3.select("#main").selectAll('g').remove();
+							header2.innerHTML = "Coal Consumption (Million Short Tons)";
+
+							// d3.select("#main").selectAll('g').remove();
 							d3.csv(dataSet, function(data) 
 									{	
 										for (var i=0; i<data.length; i++)
@@ -166,13 +426,16 @@
 											localities[ record.Locality ] = record;
 											listOfLocalities.push( record.Locality );
 										}
-										dataReady();
+										// dataReady();
+										// drawBarChart(firstSelection);
 										drawBarChart2(comparisonCountry);
 									});
 
 					} else if (dataSelection === "renewableConsumption") {
 							var dataSet = 'data/renewable_electricity_consumption.csv';
-							d3.select("#main").selectAll('g').remove();
+							header2.innerHTML = "Renewable Energy Consumption (Billion Kilowatt-hours)";
+
+							// d3.select("#main").selectAll('g').remove();
 							d3.csv(dataSet, function(data) 
 									{	
 										for (var i=0; i<data.length; i++)
@@ -208,12 +471,14 @@
 											localities[ record.Locality ] = record;
 											listOfLocalities.push( record.Locality );
 										}
-										dataReady();
+										// dataReady();
 										drawBarChart2(comparisonCountry);
 									});
 					} else if (dataSelection === "c02Emissions") {
 							var dataSet = 'data/co2_emissions_per_capita.csv';
-							d3.select("#main").selectAll('g').remove();
+							header2.innerHTML = "Energy-Related CO2 Emissions (Metric Tons per Capita)";
+
+							// d3.select("#main").selectAll('g').remove();
 							d3.csv(dataSet, function(data) 
 									{	
 										for (var i=0; i<data.length; i++)
@@ -249,12 +514,15 @@
 											localities[ record.Locality ] = record;
 											listOfLocalities.push( record.Locality );
 										}
-										dataReady();
+										// dataReady();
 										drawBarChart2(comparisonCountry);
+										// drawBarChart(firstSelection);
 									});
 					} else if (dataSelection === "totalConsumption") {
 							var dataSet = 'data/total_electricity_consumption.csv';
-							d3.select("#main").selectAll('g').remove();
+							header2.innerHTML = "Total Electricity Consumption (Billion Kilowatt-hours)";
+
+							// d3.select("#main").selectAll('g').remove();
 							d3.csv(dataSet, function(data) 
 									{	
 										for (var i=0; i<data.length; i++)
@@ -290,7 +558,7 @@
 											localities[ record.Locality ] = record;
 											listOfLocalities.push( record.Locality );
 										}
-										dataReady();
+										// dataReady();
 										drawBarChart2(comparisonCountry);
 									});
 					};
@@ -336,13 +604,17 @@
 				listOfLocalities.push( record.Locality );
 			}
 			dataReady();
-
+			initialCharts();
 		});
 
-		
+		function initialCharts() {
+			drawBarChart('North America');
+			drawBarChart2('North America');
+		}
+
 		function dataReady() {
 			// make bar chart
-			drawBarChart('United States');
+			//drawBarChart('North America');
 
 			// populate selection list
 			d3.select('#selectionWidget').selectAll('option').data(listOfLocalities).enter().append('option')
@@ -371,7 +643,6 @@
 				});
 			d3.select("#selectionWidget3")
 				.on('change', function() {
-
 					// clear the contents of the chart
 					d3.select("#co-main").selectAll('g').remove();
 

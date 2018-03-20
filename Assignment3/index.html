@@ -33,6 +33,10 @@
 			top: 175px;
 			
 		}
+		#scatter {
+			position: absolute;
+			top: 875px;
+		}
 		h1 {
 			font-size: 25px;
 		}
@@ -41,6 +45,9 @@
 			left: 750px;
 			top: 0px;
 			
+		}
+		.year {
+			font-style: italic;
 		}
 		
 	</style>
@@ -60,6 +67,7 @@
 	<svg id="co-main" width="600" height="600">
 		
 	</svg>
+
 
 	<select id="selectionWidget" style="position: absolute; left: 200px; top: 75px">
 	
@@ -89,6 +97,11 @@
 	</select>
 	
 	<script>
+		// create array of years for tooltip
+		var yearsArr = [];
+		for (var i = 1980; i <= 2012; i++) {
+			yearsArr.push(i);
+		}
 
 		var listOfLocalities = [];
 		// localities holds all data by locality in object form
@@ -161,6 +174,7 @@
 										dataReady();
 										// drawBarChart2(comparisonCountry);
 										drawBarChart(firstSelection);
+										
 									});
 							
 					} else if (dataSelection === "coalConsumption") {
@@ -612,6 +626,7 @@
 			}
 			dataReady();
 			initialCharts();
+			
 		});
 
 		function initialCharts() {
@@ -701,8 +716,7 @@
 							.style('background', 'white')
 							.style('opacity', '0')
 
-			console.log(d3.max(x));
-			console.table(x)
+			
 			// // drawing code here
 
 			d3.select('#main').append('g')
@@ -731,9 +745,10 @@
 						tooltip.transition().duration(200)
 							.style('opacity', 0.9)
 
-						tooltip.html(d)
+						tooltip.html(d + " <span class='year'>(" + yearsArr[x.indexOf(d)] + ")</span>")
 							.style('left', (d3.event.pageX - 35) + "px")
 							.style('top', (d3.event.pageY - 30) + "px")
+							
 
 						d3.select(this)
 							.style('opacity', 0.5)
@@ -773,13 +788,14 @@
 			// clear the contents of the chart
 			d3.select("#co-main").selectAll('g').remove();
 
+			// establish variables for function use
 			var x = localities[localityName].energyProduction;
 
 			var yScale = d3.scaleLinear()
 							.domain([0, d3.max(x)])
 							.range([0, height])
 
-			var yAxisValues = d3.scaleLinear()
+			    yAxisValues = d3.scaleLinear()
 								.domain([0, d3.max(x)])
 								.range([height, 0])
 
@@ -806,8 +822,6 @@
 							.style('background', 'white')
 							.style('opacity', '0')
 
-			console.log(d3.max(x));
-			console.table(x)
 			// // drawing code here
 
 			d3.select('#co-main').append('g')
@@ -836,7 +850,7 @@
 						tooltip.transition().duration(200)
 							.style('opacity', 0.9)
 
-						tooltip.html(d)
+							tooltip.html(d + " <span class='year'>(" + yearsArr[x.indexOf(d)] + ")</span>")
 							.style('left', (d3.event.pageX - 35) + "px")
 							.style('top', (d3.event.pageY - 30) + "px")
 
@@ -863,7 +877,8 @@
 							return i * 20;
 						})
 						.duration(300);
-
+				
+				// draw axes
 				var yGuide = d3.select('#co-main').append('g')
 						.attr('transform', 'translate(60,0)')
 						.call(yAxisTicks)
@@ -873,6 +888,7 @@
 						.call(xAxisTicks)
 						
 		}
+		
 		
 		
 		

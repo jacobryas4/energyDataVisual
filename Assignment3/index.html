@@ -5,8 +5,13 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js" charset="utf-8"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js" charset="utf-8"></script>
 	<style>
-    	text { 
-			font-family: Arial; 
+		@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+		body {
+			background-color: #CACCE8;
+		}
+    	* { 
+			font-family: 'Roboto', sans-serif; 
 			font-size: 15px;
 		}
 		.axis path, .axis line {
@@ -28,22 +33,24 @@
 			top: 175px;
 			
 		}
-
+		h1 {
+			font-size: 25px;
+		}
 		#header2, #units2 {
 			position: absolute;
 			left: 750px;
 			top: 0px;
+			
 		}
 		
 	</style>
 </head>
 <body>
 
-	<h2 id="header">Primary Energy Production (Quadrillion BTU)</h2>
+	<h1 id="header">Primary Energy Production (Quadrillion BTU)</h1>
 	
 
-	<h2 id="header2">Primary Energy Production (Quadrillion BTU)</h2>
-	
+	<h1 id="header2">Primary Energy Production (Quadrillion BTU)</h1>
 	
 
 	<svg id="main" width="600" height="600">
@@ -58,7 +65,7 @@
 	
 		
 	</select>
-	<select id="selectionWidget2" style="position: absolute; left: 199px; top: 95px">
+	<select id="selectionWidget2" style="position: absolute; left: 200px; top: 100px">
 
 		<option value="totalEnergyProduction">Total Production</option>
 		<option value="coalConsumption">Coal Consumption</option>
@@ -71,7 +78,7 @@
 		
 			
 	</select>
-	<select id="selectionWidget4" style="position: absolute; left: 949px; top: 95px">
+	<select id="selectionWidget4" style="position: absolute; left: 950px; top: 100px">
 		
 		<option value="totalEnergyProduction">Total Production</option>
 		<option value="coalConsumption">Coal Consumption</option>

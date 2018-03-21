@@ -49,6 +49,11 @@
 		.year {
 			font-style: italic;
 		}
+
+		.container {
+			position: absolute;
+			top: 850px;
+		}
 		
 	</style>
 </head>
@@ -95,6 +100,11 @@
 		<option value="totalConsumption">Total Consumption</option>
 			
 	</select>
+
+	<div class="container">
+		<a href="findings.html">Findings</a>
+	</div>
+	
 	
 	<script>
 		// create array of years for tooltip
@@ -808,6 +818,7 @@
 
 				xAxisTicks = d3.axisBottom(xAxisValues)
 								.ticks(d3.timeYear.every(5))
+				
 
 			
 
